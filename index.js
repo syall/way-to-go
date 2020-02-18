@@ -1,0 +1,2 @@
+initConfig();
+const world = initWorld();

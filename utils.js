@@ -2,19 +2,57 @@
  * Configuration
  */
 
-const tile = {
-    wall: '■',
-    floor: '□',
-    player: '@'
-};
-
 function initConfig() {
+
+    // Toggle Full Screen Button
     const button = document.getElementById('toggle-fs');
+    button.innerHTML = '⤢';
     button.addEventListener('click', toggleFs);
-    button.innerHTML = '';
+    function toggleFs() {
+        // Window
+        const doc = window.document;
+        const docEl = doc.documentElement;
+
+        // Request Full Screen
+        const requestFullScreen =
+            docEl.requestFullscreen ||
+            docEl.mozRequestFullScreen ||
+            docEl.webkitRequestFullScreen ||
+            docEl.msRequestFullscreen;
+
+        // Not Full Screen
+        const notFullScreen =
+            !doc.fullscreenElement &&
+            !doc.mozFullScreenElement &&
+            !doc.webkitFullscreenElement &&
+            !doc.msFullscreenElement;
+
+        // If not Full Screen, toggle Full Screen
+        if (notFullScreen) {
+            requestFullScreen.call(docEl);
+            document.getElementById('toggle-fs').style.display = 'none';
+        }
+    }
+
+    // On Full Screen Close, add back Button
+    document.addEventListener('fullscreenchange', exitHandler, false);
+    document.addEventListener('mozfullscreenchange', exitHandler, false);
+    document.addEventListener('MSFullscreenChange', exitHandler, false);
+    document.addEventListener('webkitfullscreenchange', exitHandler, false);
+    function exitHandler() {
+        if (document.webkitIsFullScreen === false)
+            document.getElementById('toggle-fs').style.display = 'block';
+        else if (document.mozFullScreen === false)
+            document.getElementById('toggle-fs').style.display = 'block';
+        else if (document.msFullscreenElement === false)
+            document.getElementById('toggle-fs').style.display = 'block';
+    }
+
 }
 
 function initWorld() {
+
+    // High DPI Canvas
     const canvas = document.getElementById('canvas');
     const dpr = window.devicePixelRatio;
     const side = 600;
@@ -24,6 +62,8 @@ function initWorld() {
     canvas.style.height = `${canvas.height / dpr}px`;
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
+
+    // Grid
     const grid = [];
     for (let i = 0; i < side; i += 10) {
         const t = [];
@@ -31,6 +71,8 @@ function initWorld() {
             t.push(tile.floor);
         grid.push(t);
     }
+
+    // World
     return {
         canvas,
         ctx,
@@ -41,41 +83,14 @@ function initWorld() {
     };
 }
 
-function toggleFs() {
-    const doc = window.document;
-    const docEl = doc.documentElement;
-
-    const requestFullScreen =
-        docEl.requestFullscreen ||
-        docEl.mozRequestFullScreen ||
-        docEl.webkitRequestFullScreen ||
-        docEl.msRequestFullscreen;
-
-    const cancelFullScreen =
-        doc.exitFullscreen ||
-        doc.mozCancelFullScreen ||
-        doc.webkitExitFullscreen ||
-        doc.msExitFullscreen;
-
-    const notFullScreen =
-        !doc.fullscreenElement &&
-        !doc.mozFullScreenElement &&
-        !doc.webkitFullscreenElement &&
-        !doc.msFullscreenElement;
-
-    return (notFullScreen)
-        ? requestFullScreen.call(docEl)
-        : cancelFullScreen.call(doc);
-}
-
 /**
  * Animation
  */
 
-function scene(frames) {
-    for (const [t, fn] of frames) fn(t);
-}
+// Runs Array of Scenes([time, frame])
+function scene(frames) { for (const [t, fn] of frames) fn(t); }
 
+// Blink Frame
 function blink(t) {
     const { ctx, height, width } = world;
     ctx.clearRect(0, 0, width, height);
@@ -86,6 +101,7 @@ function blink(t) {
     clear(t + 650);
 }
 
+// Write Frame
 const text = w => t => {
     const { ctx, height, width } = world;
     setTimeout(() => {
@@ -94,11 +110,13 @@ const text = w => t => {
     }, t);
 };
 
+// Clear Frame
 function clear(t) {
     const { ctx, height, width } = world;
     setTimeout(() => ctx.clearRect(0, 0, width, height), t);
 }
 
+// Initial Draw Frame
 function initDraw(t) {
     setTimeout(() => {
         world.start = true;
@@ -110,6 +128,14 @@ function initDraw(t) {
  * Game
  */
 
+// Tile Enumeration
+const tile = {
+    wall: '■',
+    floor: '□',
+    player: '@'
+};
+
+// Draw Grid
 function drawWorld() {
     if (world.start === false)
         return;
@@ -126,11 +152,13 @@ function drawWorld() {
     }
 }
 
+// Add Entity to World
 function addToWorld(s, o, init) {
     world[s] = o;
     init();
 }
 
+// Arroy Key Enumeration
 const dirKeys = {
     UP: '38',
     DOWN: '40',
@@ -138,6 +166,7 @@ const dirKeys = {
     RIGHT: '39'
 };
 
+// On Arrow Key Movement, Move Player
 document.onkeydown = function ({ keyCode }) {
     if (!world.start)
         return;

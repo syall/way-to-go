@@ -1,5 +1,5 @@
 /**
- * Configuratin
+ * Configuration
  */
 
 function initConfig() {

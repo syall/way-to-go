@@ -79,7 +79,7 @@ function scene(frames) {
 function blink(t) {
     const { ctx, height, width } = world;
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = '#000000';
     setTimeout(() => ctx.fillRect(0, 0, width, height), t);
     clear(t + 250);
     setTimeout(() => ctx.fillRect(0, 0, width, height), t + 400);
@@ -89,7 +89,7 @@ function blink(t) {
 const text = w => t => {
     const { ctx, height, width } = world;
     setTimeout(() => {
-        ctx.textAlign = "center";
+        ctx.textAlign = 'center';
         ctx.fillText(w, width / 2, height / 2);
     }, t);
 };

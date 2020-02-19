@@ -6,11 +6,12 @@ const world = initWorld();
 
 // Opening Scene
 scene([
-    [0400, blink],
-    [1600, text("WAKE UP.")],
-    [3600, blink],
-    [4800, text("DO YOU KNOW HOW LONG IT'S BEEN.")],
-    [6400, initDraw],
+    [0000, text('WARNING: THIS CAN CAUSE SEIZURES')],
+    [3000, blink],
+    [4000, text('WAKE UP.')],
+    [6000, blink],
+    [7000, text('DO YOU KNOW HOW LONG IT\'S BEEN.')],
+    [9000, initDraw],
 ]);
 
 // Draw First Grid

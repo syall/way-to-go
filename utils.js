@@ -99,6 +99,13 @@ function clear(t) {
     setTimeout(() => ctx.clearRect(0, 0, width, height), t);
 }
 
+function initDraw(t) {
+    setTimeout(() => {
+        world.start = true;
+        drawWorld();
+    }, t);
+}
+
 /**
  * Game
  */

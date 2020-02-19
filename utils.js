@@ -6,11 +6,20 @@ function initConfig() {
 
 function initWorld() {
     const canvas = document.getElementById('canvas');
+    const dpr = window.devicePixelRatio;
     const side = 600;
-    canvas.width = 2 * side;
-    canvas.height = side;
-    const ctx = canvas.getContext("2d");
-    return { canvas, ctx };
+    canvas.width = Math.ceil(side * 2 * dpr);
+    canvas.height = Math.ceil(side * dpr);
+    canvas.style.width = `${canvas.width / dpr}px`;
+    canvas.style.height = `${canvas.height / dpr}px`;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return {
+        canvas,
+        ctx,
+        height: side,
+        width: side * 2
+    };
 }
 
 function toggleFs() {

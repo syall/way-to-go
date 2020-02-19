@@ -170,27 +170,45 @@ function addToWorld(s, o, init) {
 
 // Arroy Key Enumeration
 const dirKeys = {
-    UP: '38',
-    DOWN: '40',
-    LEFT: '37',
-    RIGHT: '39'
+    UP: 38,
+    DOWN: 40,
+    LEFT: 37,
+    RIGHT: 39
 };
 
 // On Arrow Key Movement, Move Player
-document.onkeydown = function ({ keyCode }) {
-    if (!world.start)
-        return;
-    const { y, x } = world.player.pos;
-    const { UP, DOWN, LEFT, RIGHT } = dirKeys;
-    world.grid[y][x] = tile.wall;
-    if (keyCode == UP && y > 0 && world.grid[y - 1][x] !== tile.wall)
-        world.player.pos.y -= 1;
-    else if (keyCode == DOWN && y < 59 && world.grid[y + 1][x] !== tile.wall)
-        world.player.pos.y += 1;
-    else if (keyCode == LEFT && y > 0 && world.grid[y][x - 1] !== tile.wall)
-        world.player.pos.x -= 1;
-    else if (keyCode == RIGHT && y < 119 && world.grid[y][x + 1] !== tile.wall)
-        world.player.pos.x += 1;
-    world.grid[world.player.pos.y][world.player.pos.x] = tile.player;
-    drawWorld();
+const keys = () => {
+    const keysPressed = e => {
+        if (!world.start)
+            return;
+
+        world.player.keys.set(e.keyCode, true);
+        const { y, x } = world.player.pos;
+
+        if (world.player.keys.get(dirKeys.LEFT, true) && x > 0 && world.grid[y][x - 1] !== tile.wall) {
+            world.player.pos.x -= 1;
+            e.preventDefault();
+        }
+        if (world.player.keys.get(dirKeys.RIGHT, true) && x < 119 && world.grid[y][x + 1] !== tile.wall) {
+            world.player.pos.x += 1;
+            e.preventDefault();
+        }
+        if (world.player.keys.get(dirKeys.UP, true) && y > 0 && world.grid[y - 1][x] !== tile.wall) {
+            world.player.pos.y -= 1;
+            e.preventDefault();
+        }
+        if (world.player.keys.get(dirKeys.DOWN, true) && y < 59 && world.grid[y + 1][x] !== tile.wall) {
+            world.player.pos.y += 1;
+            e.preventDefault();
+        }
+
+        world.grid[y][x] = tile.wall;
+        world.grid[world.player.pos.y][world.player.pos.x] = tile.player;
+        drawWorld();
+    };
+
+    const keysReleased = e => world.player.keys.set(e.keyCode, false);
+
+    window.addEventListener('keydown', keysPressed, false);
+    window.addEventListener('keyup', keysReleased, false);
 };

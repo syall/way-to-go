@@ -6,7 +6,7 @@ const world = initWorld();
 
 // Opening Scene
 scene([
-    [0000, text('WARNING: THIS CAN CAUSE SEIZURES')],
+    [0000, text('WARNING: GAME CAN CAUSE SEIZURES')],
     [3000, blink()()],
     [3400, blink()()],
     [4000, text('WAKE UP.')],
@@ -20,5 +20,5 @@ scene([
 ]);
 
 // Add Player to World
-const p = { pos: { y: 30, x: 60 } };
-addToWorld('player', p, () => world.grid[p.pos.y][p.pos.x] = tile.player);
+const p = { pos: { y: 30, x: 60 }, keys: new Map() };
+addToWorld('player', p, () => (world.grid[p.pos.y][p.pos.x] = tile.player) && keys());

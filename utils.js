@@ -91,15 +91,25 @@ function initWorld() {
 function scene(frames) { for (const [t, fn] of frames) fn(t); }
 
 // Blink Frame
-function blink(t) {
+const blink = (closeDur = 100) => (openDur = 300) => t => {
     const { ctx, height, width } = world;
-    ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = '#000000';
-    setTimeout(() => ctx.fillRect(0, 0, width, height), t);
-    clear(t + 250);
-    setTimeout(() => ctx.fillRect(0, 0, width, height), t + 400);
-    clear(t + 650);
-}
+    // Close
+    for (let i = 0; i <= closeDur; i++)
+        setTimeout(() => {
+            const h = i / closeDur * height / 2;
+            ctx.fillRect(0, 0, width, h);
+            ctx.fillRect(0, height - h, width, h);
+        }, t + i);
+    // Open
+    for (let i = openDur; i >= 0; i--)
+        setTimeout(() => {
+            ctx.clearRect(0, 0, width, height);
+            const h = i / openDur * height / 2;
+            ctx.fillRect(0, 0, width, h);
+            ctx.fillRect(0, height - h, width, h);
+        }, t + (openDur - i) + closeDur);
+};
 
 // Write Frame
 const text = w => t => {

@@ -5,7 +5,7 @@ initConfig();
 const world = initWorld();
 
 // Opening Scene
-(window.localStorage['way-to-go-opening'])
+(sessionStorage.getItem('way-to-go-opening'))
     ? initDraw(0)
     : scene([
         [0000, text('WARNING: GAME CAN CAUSE SEIZURES')],
@@ -18,7 +18,7 @@ const world = initWorld();
         [9000, blink()()],
         [9400, blink()()],
         [9999, initDraw],
-        [0000, () => window.localStorage['way-to-go-opening'] = true]
+        [0000, () => sessionStorage.setItem('way-to-go-opening', true)]
     ]);
 
 

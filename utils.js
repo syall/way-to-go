@@ -141,7 +141,7 @@ function initDraw(t) {
 // Tile Enumeration
 const tile = {
     wall: '■',
-    floor: '□',
+    floor: ' ', // '□',
     player: '@'
 };
 

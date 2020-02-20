@@ -150,6 +150,7 @@ function drawWorld() {
     if (world.start === false)
         return;
     const { ctx, grid, width, height } = world;
+    ctx.textAlign = 'center';
     ctx.clearRect(0, 0, width, height);
     for (let i = 0; i < grid.length; i++)
         for (let j = 0; j < grid[i].length; j++)
@@ -176,6 +177,14 @@ const dirKeys = {
     RIGHT: 39
 };
 
+function collide(type) {
+    const bump = [
+        tile.wall,
+        tile.player
+    ].filter(t => t !== type);
+    return y => x => bump.includes(world.grid[y][x]);
+}
+
 // On Arrow Key Movement, Move Player
 const keys = () => {
     const keysPressed = e => {
@@ -184,20 +193,21 @@ const keys = () => {
 
         world.player.keys.set(e.keyCode, true);
         const { y, x } = world.player.pos;
+        const block = collide(tile.player);
 
-        if (world.player.keys.get(dirKeys.LEFT, true) && x > 0 && world.grid[y][x - 1] !== tile.wall) {
+        if (world.player.keys.get(dirKeys.LEFT, true) && x > 0 && !block(y)(x - 1)) {
             world.player.pos.x -= 1;
             e.preventDefault();
         }
-        if (world.player.keys.get(dirKeys.RIGHT, true) && x < 119 && world.grid[y][x + 1] !== tile.wall) {
+        if (world.player.keys.get(dirKeys.RIGHT, true) && x < world.width - 1 && !block(y)(x + 1)) {
             world.player.pos.x += 1;
             e.preventDefault();
         }
-        if (world.player.keys.get(dirKeys.UP, true) && y > 0 && world.grid[y - 1][x] !== tile.wall) {
+        if (world.player.keys.get(dirKeys.UP, true) && y > 0 && !block(y - 1)(x)) {
             world.player.pos.y -= 1;
             e.preventDefault();
         }
-        if (world.player.keys.get(dirKeys.DOWN, true) && y < 59 && world.grid[y + 1][x] !== tile.wall) {
+        if (world.player.keys.get(dirKeys.DOWN, true) && y < world.height - 1 && !block(y + 1)(x)) {
             world.player.pos.y += 1;
             e.preventDefault();
         }

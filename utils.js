@@ -68,7 +68,7 @@ function initWorld() {
     for (let i = 0; i < side; i += 10) {
         const t = [];
         for (let j = 0; j < side * 2; j += 10)
-            t.push(tile.floor);
+            t.push(tile.wall);
         grid.push(t);
     }
 
@@ -81,6 +81,95 @@ function initWorld() {
         grid,
         start: false
     };
+}
+
+function initDungeon() {
+    const max_rooms = 50;
+    const min_size = 16;
+    const max_size = 24;
+
+    addToWorld('rooms', [], () => null);
+
+    for (let i = 0; i < max_rooms; i++) {
+        const gh = world.height / 10 - 1;
+        const gw = world.width / 10 - 1;
+        const y = rng(1, gh);
+        const x = rng(1, gw);
+        const w = Math.min(rng(min_size, max_size), gw - x);
+        const h = Math.min(rng(min_size, max_size), gh - y);
+        const cur = { w, h, y, x };
+        let status = true;
+        for (const r of world.rooms)
+            if (intersect(r, cur))
+                status = false;
+        if (!status)
+            continue;
+        addRoom(cur);
+        if (world.rooms.length > 1) {
+            const cy = Math.floor(cur.y + (cur.h / 2));
+            const cx = Math.floor(cur.x + (cur.w / 2));
+            const prev = world.rooms[world.rooms.length - 2];
+            const py = Math.floor(prev.y + (prev.h / 2));
+            const px = Math.floor(prev.x + (prev.w / 2));
+            if (rng(0, 1) === 1) {
+                hor_tunnel(px, cx, py);
+                ver_tunnel(py, cy, cx);
+            } else {
+                ver_tunnel(py, cy, px);
+                hor_tunnel(px, cx, cy);
+            }
+        }
+    }
+
+    // Add Player to World
+    const { w, h, y, x } = world.rooms[0];
+    const cy = Math.floor(y + (h / 2));
+    const cx = Math.floor(x + (w / 2));
+    const p = {
+        pos: {
+            y: cy,
+            x: cx
+        },
+        keys: new Map()
+    };
+    addToWorld('player', p, () => {
+        world.grid[p.pos.y][p.pos.x] = tile.player;
+        player_keys();
+    });
+
+}
+
+// Random Numbers: l to h
+function rng(l, h) {
+    return Math.floor(Math.random() * (h - l + 1)) + l;
+}
+
+function intersect(r1, r2) {
+    return (
+        r1.x <= r2.x + r2.w &&
+        r2.x + r2.w >= r2.x &&
+        r1.y <= r2.y + r2.h &&
+        r1.y + r1.h >= r2.y
+    );
+}
+
+function addRoom(room) {
+    for (let i = room.y; i < room.y + room.h; i++)
+        for (let j = room.x; j < room.x + room.w; j++)
+            world.grid[i][j] = tile.floor;
+    world.rooms.push(room);
+}
+
+function hor_tunnel(px, cx, py) {
+    console.log({ px, cx, py });
+    for (let i = Math.min(px, cx); i < Math.max(px, cx); i++)
+        world.grid[py][i] = tile.floor;
+}
+
+function ver_tunnel(py, cy, px) {
+    console.log({ py, cy, px });
+    for (let i = Math.min(py, cy); i < Math.max(py, cy); i++)
+        world.grid[i][px] = tile.floor;
 }
 
 /**
@@ -141,7 +230,8 @@ function initDraw(t) {
 // Tile Enumeration
 const tile = {
     wall: '■',
-    floor: ' ', // '□',
+    floor: ' ',
+    trail: '□',
     player: '@'
 };
 
@@ -186,7 +276,7 @@ function collide(type) {
 }
 
 // On Arrow Key Movement, Move Player
-const keys = () => {
+const player_keys = () => {
     const keysPressed = e => {
         if (!world.start)
             return;
@@ -212,7 +302,7 @@ const keys = () => {
             e.preventDefault();
         }
 
-        world.grid[y][x] = tile.wall;
+        world.grid[y][x] = tile.trail;
         world.grid[world.player.pos.y][world.player.pos.x] = tile.player;
         drawWorld();
     };

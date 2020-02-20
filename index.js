@@ -3,6 +3,7 @@ initConfig();
 
 // Initialize World
 const world = initWorld();
+initDungeon();
 
 // Opening Scene
 (sessionStorage.getItem('way-to-go-opening'))
@@ -20,8 +21,3 @@ const world = initWorld();
         [9999, initDraw],
         [0000, () => sessionStorage.setItem('way-to-go-opening', true)]
     ]);
-
-
-// Add Player to World
-const p = { pos: { y: 30, x: 60 }, keys: new Map() };
-addToWorld('player', p, () => (world.grid[p.pos.y][p.pos.x] = tile.player) && keys());

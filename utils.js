@@ -84,25 +84,24 @@ function initWorld() {
 }
 
 function initDungeon() {
-    const max_rooms = 50;
-    const min_size = 16;
-    const max_size = 24;
+    const max_rooms = 100;
+    const min_size = 10;
+    const max_size = 20;
 
     addToWorld('rooms', [], () => null);
-
     for (let i = 0; i < max_rooms; i++) {
         const gh = world.height / 10 - 1;
         const gw = world.width / 10 - 1;
         const y = rng(1, gh);
         const x = rng(1, gw);
-        const w = Math.min(rng(min_size, max_size), gw - x);
-        const h = Math.min(rng(min_size, max_size), gh - y);
+        const w = rng(min_size, max_size);
+        const h = rng(min_size, max_size);
+        if (y + h > gh || x + w > gw) {
+            i--;
+            continue;
+        }
         const cur = { w, h, y, x };
-        let status = true;
-        for (const r of world.rooms)
-            if (intersect(r, cur))
-                status = false;
-        if (!status)
+        if (world.rooms.some(r => intersect(r, cur)))
             continue;
         addRoom(cur);
         if (world.rooms.length > 1) {
@@ -141,7 +140,7 @@ function initDungeon() {
 
 // Random Numbers: l to h
 function rng(l, h) {
-    return Math.floor(Math.random() * (h - l + 1)) + l;
+    return Math.floor(Math.random() * (h - l)) + l + 1;
 }
 
 function intersect(r1, r2) {
@@ -161,14 +160,12 @@ function addRoom(room) {
 }
 
 function hor_tunnel(px, cx, py) {
-    console.log({ px, cx, py });
-    for (let i = Math.min(px, cx); i < Math.max(px, cx); i++)
+    for (let i = Math.min(px, cx); i <= Math.max(px, cx); i++)
         world.grid[py][i] = tile.floor;
 }
 
 function ver_tunnel(py, cy, px) {
-    console.log({ py, cy, px });
-    for (let i = Math.min(py, cy); i < Math.max(py, cy); i++)
+    for (let i = Math.min(py, cy); i <= Math.max(py, cy); i++)
         world.grid[i][px] = tile.floor;
 }
 
@@ -285,19 +282,19 @@ const player_keys = () => {
         const { y, x } = world.player.pos;
         const block = collide(tile.player);
 
-        if (world.player.keys.get(dirKeys.LEFT, true) && x > 0 && !block(y)(x - 1)) {
+        if (world.player.keys.get(dirKeys.LEFT, true) && !block(y)(x - 1)) {
             world.player.pos.x -= 1;
             e.preventDefault();
         }
-        if (world.player.keys.get(dirKeys.RIGHT, true) && x < world.width - 1 && !block(y)(x + 1)) {
+        if (world.player.keys.get(dirKeys.RIGHT, true) && !block(y)(x + 1)) {
             world.player.pos.x += 1;
             e.preventDefault();
         }
-        if (world.player.keys.get(dirKeys.UP, true) && y > 0 && !block(y - 1)(x)) {
+        if (world.player.keys.get(dirKeys.UP, true) && !block(y - 1)(x)) {
             world.player.pos.y -= 1;
             e.preventDefault();
         }
-        if (world.player.keys.get(dirKeys.DOWN, true) && y < world.height - 1 && !block(y + 1)(x)) {
+        if (world.player.keys.get(dirKeys.DOWN, true) && !block(y + 1)(x)) {
             world.player.pos.y += 1;
             e.preventDefault();
         }

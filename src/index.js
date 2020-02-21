@@ -30,7 +30,4 @@ scene((sessionStorage.getItem('wtg-opening'))
 
 
 // Service Worker
-if ('serviceWorker' in navigator) navigator.serviceWorker.register(
-    '/src/sw.js',
-    { scope: '/' }
-);
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');

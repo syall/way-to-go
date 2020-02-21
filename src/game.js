@@ -121,8 +121,48 @@ function initDungeon() {
         world.rooms.push(cur);
     }
 
-    // Add Player
-    const { w, h, y, x } = world.rooms[0];
+    // Add to session storage
+    sessionStorage.setItem('wtg-grid', JSON.stringify(world.grid));
+    sessionStorage.setItem('wtg-room', JSON.stringify(world.rooms[0]));
+
+    // Room Intersection
+    function intersect(r1, r2) {
+        return (
+            r1.x <= r2.x + r2.w &&
+            r2.x + r2.w >= r2.x &&
+            r1.y <= r2.y + r2.h &&
+            r1.y + r1.h >= r2.y
+        );
+    }
+
+    // Apply Room
+    function addRoom(room) {
+        for (let i = room.y; i < room.y + room.h; i++)
+            for (let j = room.x; j < room.x + room.w; j++)
+                world.grid[i][j] = tile.floor;
+    }
+
+    // Apply Horizontal Tunnel
+    function hor_tunnel(px, cx, py) {
+        for (let i = Math.min(px, cx); i <= Math.max(px, cx); i++)
+            world.grid[py][i] = tile.floor;
+    }
+
+    // Apply Vertical Tunnel
+    function ver_tunnel(py, cy, px) {
+        for (let i = Math.min(py, cy); i <= Math.max(py, cy); i++)
+            world.grid[i][px] = tile.floor;
+    }
+
+}
+
+// Add Player
+function addPlayer() {
+
+    // Room 0
+    const { w, h, y, x } = JSON.parse(sessionStorage.getItem('wtg-room'));
+
+    // Player
     const p = {
         pos: {
             y: Math.floor(y + (h / 2)),
@@ -130,6 +170,8 @@ function initDungeon() {
         },
         keys: new Map()
     };
+
+    // Add Player
     addToWorld('player', p, () => {
         world.grid[p.pos.y][p.pos.x] = tile.def;
         player_keys();
@@ -228,38 +270,6 @@ function initDungeon() {
             drawWorld();
         };
     };
-
-    // Add to session storage
-    sessionStorage.setItem('wtg-grid', JSON.stringify(world.grid));
-
-    // Room Intersection
-    function intersect(r1, r2) {
-        return (
-            r1.x <= r2.x + r2.w &&
-            r2.x + r2.w >= r2.x &&
-            r1.y <= r2.y + r2.h &&
-            r1.y + r1.h >= r2.y
-        );
-    }
-
-    // Apply Room
-    function addRoom(room) {
-        for (let i = room.y; i < room.y + room.h; i++)
-            for (let j = room.x; j < room.x + room.w; j++)
-                world.grid[i][j] = tile.floor;
-    }
-
-    // Apply Horizontal Tunnel
-    function hor_tunnel(px, cx, py) {
-        for (let i = Math.min(px, cx); i <= Math.max(px, cx); i++)
-            world.grid[py][i] = tile.floor;
-    }
-
-    // Apply Vertical Tunnel
-    function ver_tunnel(py, cy, px) {
-        for (let i = Math.min(py, cy); i <= Math.max(py, cy); i++)
-            world.grid[i][px] = tile.floor;
-    }
 
 }
 

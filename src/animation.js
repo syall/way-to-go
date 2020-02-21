@@ -41,6 +41,8 @@ const frames = {
         // Destructure World
         const { ctx, height, width } = world;
         setTimeout(() => {
+            // Clear Canvas
+            ctx.clearRect(0, 0, width, height);
             // Set Text Align
             ctx.textAlign = 'center';
             // Fill Text at Center

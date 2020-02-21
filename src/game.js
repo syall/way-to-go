@@ -49,8 +49,8 @@ function initWorld() {
 function initDungeon() {
 
     // Get Stored Grid
-    if (sessionStorage.getItem('grid')) {
-        world.grid = JSON.parse(sessionStorage.getItem('grid'));
+    if (sessionStorage.getItem('wtg-grid')) {
+        world.grid = JSON.parse(sessionStorage.getItem('wtg-grid'));
         return;
     }
 
@@ -230,8 +230,7 @@ function initDungeon() {
     };
 
     // Add to session storage
-    sessionStorage.setItem('grid', JSON.stringify(world.grid));
-    sessionStorage.removeItem('grid');
+    sessionStorage.setItem('wtg-grid', JSON.stringify(world.grid));
 
     // Room Intersection
     function intersect(r1, r2) {

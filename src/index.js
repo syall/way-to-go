@@ -6,9 +6,12 @@ const world = initWorld();
 initDungeon();
 
 // Opening Scene
-(sessionStorage.getItem('way-to-go-opening'))
-    ? frames.initDraw(0)
-    : scene([
+scene((sessionStorage.getItem('wtg-opening'))
+    ? [
+        [0000, frames.text('WARNING: GAME CAN CAUSE SEIZURES')],
+        [3000, frames.initDraw]
+    ]
+    : [
         [0000, frames.text('WARNING: GAME CAN CAUSE SEIZURES')],
         [3000, frames.blink()()],
         [3400, frames.blink()()],
@@ -19,5 +22,6 @@ initDungeon();
         [9000, frames.blink()()],
         [9400, frames.blink()()],
         [9999, frames.initDraw],
-        [0000, () => sessionStorage.setItem('way-to-go-opening', true)]
-    ]);
+        [0000, () => sessionStorage.setItem('wtg-opening', true)]
+    ]
+);

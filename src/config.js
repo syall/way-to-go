@@ -47,6 +47,8 @@ function initConfig() {
             document.getElementById('toggle-fs').style.display = 'block';
         else if (document.msFullscreenElement === false)
             document.getElementById('toggle-fs').style.display = 'block';
+        else
+            document.getElementById('toggle-fs').style.display = 'none';
     }
 
 }

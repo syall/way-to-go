@@ -4,6 +4,7 @@ initConfig();
 // Initialize World
 const world = initWorld();
 initDungeon();
+addPlayer();
 
 // Opening Scene
 scene((sessionStorage.getItem('wtg-opening'))

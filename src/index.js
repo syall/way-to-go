@@ -6,12 +6,9 @@ addGoal();
 
 // Opening Scene
 scene((sessionStorage.getItem('wtg-opening'))
-    ? [
-        [0000, frames.text('WARNING: GAME CAN CAUSE SEIZURES')],
-        [3000, frames.initDraw]
-    ]
+    ? [[0000, frames.initDraw]]
     : [
-        [0000, frames.text('WARNING: GAME CAN CAUSE SEIZURES')],
+        [0000, frames.text('WARNING: GAME HAS SUDDEN FLASHES')],
         [3000, frames.blink()()],
         [3400, frames.blink()()],
         [4000, frames.text('WAKE UP.')],

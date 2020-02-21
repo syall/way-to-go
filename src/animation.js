@@ -64,5 +64,12 @@ const frames = {
             // Draw World
             drawWorld();
         }, t);
+    },
+    // Win Screen
+    winScreen: () => {
+        // Write Text
+        frames.text('SEEMS YOU MADE IT.')(0);
+        // Clear Session Storage
+        sessionStorage.clear();
     }
 };

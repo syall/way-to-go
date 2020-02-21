@@ -8,7 +8,8 @@ const tile = {
     floor: '◻', // '□',
     trail: '◼', // '⊡', // '■',
     player: '',
-    def: '⽅', // '⏣'
+    def: '⽅', // '⏣',
+    goal: '★'
 };
 
 // Initialize World
@@ -124,6 +125,7 @@ function initDungeon() {
     // Add to session storage
     sessionStorage.setItem('wtg-grid', JSON.stringify(world.grid));
     sessionStorage.setItem('wtg-room', JSON.stringify(world.rooms[0]));
+    sessionStorage.setItem('wtg-goal', JSON.stringify(world.rooms.pop()));
 
     // Room Intersection
     function intersect(r1, r2) {
@@ -273,11 +275,39 @@ function addPlayer() {
 
 }
 
+// Add Goal
+function addGoal() {
+
+    // Last Room
+    const { w, h, y, x } = JSON.parse(sessionStorage.getItem('wtg-goal'));
+
+    // Goal
+    const g = {
+        pos: {
+            y: Math.floor(y + (h / 2)),
+            x: Math.floor(x + (w / 2))
+        },
+    };
+
+    // Add Player
+    addToWorld('goal', g, () => {
+        world.grid[g.pos.y][g.pos.x] = tile.goal;
+    });
+
+}
+
 // Draw Grid
 function drawWorld() {
     // If World is paused, ignore
     if (world.start === false)
         return;
+
+    if (world.player.pos.x === world.goal.pos.x &&
+        world.player.pos.y === world.goal.pos.y) {
+        world.start = false;
+        frames.winScreen();
+        return;
+    }
 
     // Destructure World
     const { ctx, grid, width, height } = world;

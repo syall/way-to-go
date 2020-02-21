@@ -1,5 +1,5 @@
 // Cache Version
-const CACHE_NAME = 'wtg-0.1';
+const CACHE_NAME = 'wtg-alpha';
 
 // Resources
 const urlsToCache = [
@@ -7,7 +7,6 @@ const urlsToCache = [
     '/index.html',
     '/css/index.css',
     '/src/animation.js',
-    '/src/config.js',
     '/src/game.js',
     '/src/index.js',
     '/src/utils.js',

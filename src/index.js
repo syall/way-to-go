@@ -1,16 +1,3 @@
-// Service Worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js').then(function (registration) {
-            // Registration was successful
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }, function (err) {
-            // registration failed :(
-            console.log('ServiceWorker registration failed: ', err);
-        });
-    });
-}
-
 // Initialize Configuration
 initConfig();
 
@@ -39,4 +26,11 @@ scene((sessionStorage.getItem('wtg-opening'))
         [9999, frames.initDraw],
         [0000, () => sessionStorage.setItem('wtg-opening', true)]
     ]
+);
+
+
+// Service Worker
+if ('serviceWorker' in navigator) navigator.serviceWorker.register(
+    '/src/sw.js',
+    { scope: '/' }
 );

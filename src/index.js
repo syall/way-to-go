@@ -1,6 +1,3 @@
-// Initialize Configuration
-initConfig();
-
 // Initialize World
 const world = initWorld();
 initDungeon();
